@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body {
+            font-family: Arial, sans-serif;
+            background-color: #0b272a;
+            
+            height: 100%;
+            width: 100%;
+            padding-top: 10%;
+            justify-content: center;
+            align-items: center;
+            align-content: space-around
+            
+        }
+        .contador{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            align-content: space-around;
+            gap:10vh;
+            padding: 2%;
+        }
+
+        .container {
+            background: #4e706b;
+            padding: 20px;
+            border: 2px solid #244747;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10% rgba(253, 250, 250, 0.953);
+            width: 300px;
+        }
+
+        h3 {
+            color: aliceblue;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-size: 2rem;
+        }
+
+
+        input,
+        select,
+        button {
+            width: 90%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #7b9c92;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .gender-options {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+
+        .gender-options label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #000000;
+        }
+
+        button {
+            background-color: black;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #dad7c5;
+            color: #0b272a;
+        }
+
+        .final {
+            color: #dad7c5;
+        }
+        #tablaDatos{
+            color: aliceblue;
+            width: 100vh;
+        }
+</style>
+<body>
+<div class="contador">
+        
+    <dialog id="alert-dialog"><!---->
+        <div class="container">
+            <h2>REGISTRARSE</h2>
+            <input id="Nom" type="text" placeholder="Nombres" required>
+            <input id="Ape" type="text" placeholder="Apellidos" required>
+            <input id="tele" type="tel" placeholder="Número de teléfono" required>
+        
+            <select id="docum">
+                <option value="">Seleccione un documento</option>
+                <option value="DNI">DNI</option>
+                <option value="Pasaporte">Pasaporte</option>
+                <option value="Licencia">Cedula</option>
+            </select>
+        
+            <input id="numn" type="text" placeholder="Número de documento" required>
+            <input id="correo" type="email" placeholder="Correo electrónico" required>
+        
+            <div class="gender-options">
+                <label><input type="radio" name="genero" value="Masculino"> Masculino</label>
+                <label><input type="radio" name="genero" value="Femenino"> Femenino</label>
+                <label><input type="radio" name="genero" value="Otro"> Otro</label>
+            </div>
+        
+            <input type="date" id="fecha" required>
+            <button onclick="guardar()" type="submit">ENVIAR</button>
+        </div>
+        <button onClick="this.parentElement.close()">✖️</button>
+        </dialog>
+        
+        <!---->
+        <button id="show-button">Mostrar diálogo</button>
+
+
+        <div>
+            <!-- Tabla donde se mostrarán los datos -->
+            <table border="1" id="tablaDatos">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Teléfono</th>
+                    <th>Tipo documento</th>
+                    <th>Número documento</th>
+                    <th>Correo</th>
+                    <th>Género</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Eliminar</th>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+    <script>
+    const showButton = document.querySelector("#show-button");
+        showButton.addEventListener("click", function () {
+                const alertDialog = document.querySelector("#alert-dialog");
+                alertDialog.show();
+            });
+    </script>
+    <script>
+        let idEditando = null;
+        let guardo = [];
+        let contadorID = 1
+        function guardar() {
+            let nombre = document.getElementById("Nom").value.trim();
+            let apellido = document.getElementById("Ape").value.trim();
+            let telefono = document.getElementById("tele").value.trim();
+            let tipoDocumento = document.getElementById("docum").value.trim();
+            let numeroDocumento = document.getElementById("numn").value.trim();
+            let correo = document.getElementById("correo").value.trim();
+            let generoSeleccionado = document.querySelector('input[name="genero"]:checked');
+            let fechaNacimiento = document.getElementById("fecha").value;
+
+
+            if (nombre === "") {
+                mostrarError(" Nombre");
+                return;
+            } else if (apellido == "") {
+                mostrarError(" Apellido");
+                return;
+            } else if (telefono === "") {
+                mostrarError(" Telefono");
+                return;
+            } else if (tipoDocumento === "") {
+                mostrarError(" Tipo de Documento");
+                return;
+            } else if (numeroDocumento === "") {
+                mostrarError(" Numero de Documento");
+                return;
+            } else if (correo === "") {
+                mostrarError(" correo");
+                return;
+            } else if (!generoSeleccionado) {
+                mostrarError(" Selecciona genero");
+                return;
+            } else if (fechaNacimiento === "") {
+                mostrarError(" Fecha Nacimiento");
+                return;
+            } 
+                let persona = {
+                    id: contadorID++,  
+                    nombre, 
+                    apellido, 
+                    telefono, 
+                    tipoDocumento, 
+                    numeroDocumento, 
+                    correo, 
+                    genero: generoSeleccionado.value, 
+                    fechaNacimiento
+                };
+                
+                guardo.push(persona);
+                //guardo.unshift(persona);
+                limpiarFormulario();
+                pintarTabla();
+                console.log(guardo)
+                //alerta registrado
+                Swal.fire({
+                    title: "REGISTRADO!",
+                    icon: "success",
+                    draggable: true
+                });
+            
+        }
+
+        function limpiarFormulario() {
+            document.getElementById("Nom").value = "";
+            document.getElementById("Ape").value = "";
+            document.getElementById("tele").value = "";
+            document.getElementById("docum").value = "";
+            document.getElementById("numn").value = "";
+            document.getElementById("correo").value = "";
+            document.querySelectorAll('input[name="genero"]').forEach(r => r.checked = false);
+            document.getElementById("fecha").value = "";
+        }
+
+        function mostrarError(dato) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: `completa el campo ${dato}`,
+                width: "50vh",
+                background: "#dad7c5",
+                backdrop: "",
+                timer: 6000,
+                timerProgressBar: true
+            });
+        }
+
+        
+        function pintarTabla() {
+            const tabla = document.getElementById("tablaDatos");
+            //por qie?
+            while (tabla.rows.length > 1) {
+                tabla.deleteRow(1);
+            }
+
+            guardo.forEach((item) => {
+                let fila = document.createElement("tr");
+
+                let celdas = [
+                    item.id, item.nombre, item.apellido, item.telefono, item.tipoDocumento,
+                    item.numeroDocumento, item.correo, item.genero, item.fechaNacimiento
+                ];
+
+                celdas.forEach(valor => {
+                    let td = document.createElement("td");
+                    td.textContent = valor;
+                    fila.appendChild(td);
+                });
+
+                    let celdaAccion = document.createElement("td");
+                    let guardodiv = document.createElement("div");
+
+                // Crear botón eliminar
+                let boton = document.createElement("button");
+                boton.textContent = "❌";
+                boton.style.padding = "5px 10px";
+                boton.style.border = "none";
+                boton.style.borderRadius = "5px";
+                boton.style.cursor = "pointer";
+
+                // Crear botón editar
+                let boton2 = document.createElement("button");
+                boton2.textContent = "🎈";
+                boton2.style.padding = "5px 10px";
+                boton2.style.border = "none";
+                boton2.style.borderRadius = "5px";
+                boton2.style.cursor = "pointer";
+                boton.classList.add("botonEliminar");
+                boton2.addEventListener("click", () => {
+                    idEditando = item.id; // Guardar el ID actual
+                    editar(item);
+                });
+
+
+
+                boton.addEventListener("click", () => {
+                    Swal.fire({
+                        title: "Estas seguro?",
+                        text: "Deseas eliminar los datos de la tabla ",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#C8ECC1FF",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Eliminar!"
+                        }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire({
+                            title: "Eliminado!",
+                            text: "Los datos se han eliminado ",
+                            icon: "success"
+                            });
+                            guardo = guardo.filter(persona => persona.id !== item.id);
+                            pintarTabla(); 
+                        }
+                        });
+
+
+                   // guardo = guardo.filter(persona => persona.id !== item.id);
+                   pintarTabla(); // nombre correcto
+                });
+
+                guardodiv.appendChild(boton);
+                guardodiv.appendChild(boton2);
+                celdaAccion.appendChild(guardodiv);
+                fila.appendChild(celdaAccion);
+
+                tabla.appendChild(fila);
+            });
+        }
+        // poder volver a ver los datos en las casillas corespondientes y editar los datos del formulario 
+        function editar(item) {
+            // const registros=JSON.parse(localStorage.getItem("tablaDatos"))||[];
+            // const registro=registros[guardo];
+            document.getElementById("Nom").value = item.nombre;
+            document.getElementById("Ape").value = item.apellido;
+            document.getElementById("tele").value = item.telefono;
+            document.getElementById("docum").value = item.tipoDocumento;
+            document.getElementById("numn").value = item.numeroDocumento;
+            document.getElementById("correo").value = item.correo;
+            document.querySelectorAll('input[name="genero"]').forEach(r => {
+                    r.checked = r.value === item.genero;
+            });
+            document.getElementById("fecha").value = item.fechaNacimiento;
+            document.querySelector("#alert-dialog").show();
+
+        
+        }
+
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+</html>
