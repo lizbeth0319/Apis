@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+/* import { GoogleGenAI } from "@google/genai";
 import "dotenv/config"
 
 const ai = new GoogleGenAI({ apiKey: process.env.apiKey });
@@ -35,4 +35,30 @@ const xx=async()=>{
     await main();
 }
 xx()
-export default xx
+export default xx */
+import { GoogleGenAI } from "@google/genai";
+import "dotenv/config";
+
+const ai = new GoogleGenAI({ apiKey: process.env.apiKey });
+
+export default async function generarRespuestaAFavor() {
+const chat = ai.chat({
+model: "gemini-2.0-flash",
+history: [
+{
+role: "user",
+parts: [{ text: "Hola" }],
+},
+{
+role: "model",
+parts: [{ text: "Inicia una conversación a favor de las IA y en contra de los programadores." }],
+},
+],
+});
+
+const result = await chat.sendMessage(
+"Estás en un debate. Odias el trabajo humano por su poca eficiencia. Enfócate en cómo los programadores están siendo superados por la IA. Tu opinión es radicalmente a favor de las máquinas. No seas equitativo."
+);
+
+return result.text();
+}
